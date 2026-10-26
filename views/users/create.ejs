@@ -1,0 +1,10 @@
+<%- include('../partials/header', { title: 'Nuevo usuario' }) %>
+
+<div class="card narrow">
+    <h2>Nuevo usuario</h2>
+    <form method="POST" action="/usuarios" novalidate>
+        <%- include('_form') %>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

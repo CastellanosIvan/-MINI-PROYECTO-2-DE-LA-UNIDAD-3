@@ -1,0 +1,62 @@
+<%- include('../partials/header', { title: 'Nuevo Producto' }) %>
+
+<div class="card narrow">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="margin: 0;">➕ Registrar Producto</h2>
+        <a class="btn btn-gray btn-sm" href="/productos">Volver</a>
+    </div>
+
+    <p style="font-size: 0.88rem; color: #94a3b8;">
+        Validación requerida mediante <strong>StoreProductoRequest</strong>. Evento auditado en <code>storage/logs/productos.log</code>.
+    </p>
+
+    <form method="POST" action="/productos" novalidate>
+        <label for="nombre">Nombre del producto</label>
+        <input type="text" id="nombre" name="nombre" value="<%= typeof form !== 'undefined' && form.nombre ? form.nombre : '' %>" required>
+        <% if (typeof errors !== 'undefined' && errors.nombre) { %><div class="error"><%= errors.nombre %></div><% } %>
+
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" rows="3"><%= typeof form !== 'undefined' && form.descripcion ? form.descripcion : '' %></textarea>
+        <% if (typeof errors !== 'undefined' && errors.descripcion) { %><div class="error"><%= errors.descripcion %></div><% } %>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+                <label for="precio">Precio ($ MXN)</label>
+                <input type="number" step="0.01" id="precio" name="precio" value="<%= typeof form !== 'undefined' && form.precio ? form.precio : '' %>" required>
+                <% if (typeof errors !== 'undefined' && errors.precio) { %><div class="error"><%= errors.precio %></div><% } %>
+            </div>
+            <div>
+                <label for="existencia">Existencia (Stock)</label>
+                <input type="number" id="existencia" name="existencia" value="<%= typeof form !== 'undefined' && form.existencia ? form.existencia : '10' %>" required>
+                <% if (typeof errors !== 'undefined' && errors.existencia) { %><div class="error"><%= errors.existencia %></div><% } %>
+            </div>
+        </div>
+
+        <label for="usuario_id">Vendedor asignado (Relación belongsTo Usuario)</label>
+        <select id="usuario_id" name="usuario_id" required>
+            <% vendedores.forEach(function(v) { %>
+                <option value="<%= v.id %>" <%= (user && user.id === v.id) ? 'selected' : '' %>>
+                    <%= v.nombre %> <%= v.apellidos %> (<%= v.rol %> - <%= v.correo %>)
+                </option>
+            <% }); %>
+        </select>
+        <% if (typeof errors !== 'undefined' && errors.usuario_id) { %><div class="error"><%= errors.usuario_id %></div><% } %>
+
+        <label>Categorías asociadas (Relación Muchos a Muchos - belongsToMany)</label>
+        <div style="background: #0f111a; border: 1px solid #33384f; border-radius: 6px; padding: 12px; max-height: 150px; overflow-y: auto;">
+            <% categorias.forEach(function(cat) { %>
+                <label style="display: flex; align-items: center; gap: 8px; margin: 4px 0; font-weight: normal; cursor: pointer;">
+                    <input type="checkbox" name="categorias" value="<%= cat.id %>" style="width: auto;">
+                    <span><%= cat.nombre %></span>
+                </label>
+            <% }); %>
+        </div>
+
+        <div style="margin-top: 24px; display: flex; gap: 10px;">
+            <button class="btn" type="submit">Guardar Producto</button>
+            <a class="btn btn-gray" href="/productos">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

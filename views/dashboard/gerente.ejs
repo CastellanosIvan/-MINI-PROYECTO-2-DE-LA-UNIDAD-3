@@ -1,0 +1,143 @@
+<%- include('../partials/header', { title: user.rol === 'empleado' ? 'Panel del Empleado' : 'Panel del Gerente' }) %>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">
+                <%= user.rol === 'empleado' ? '🛠️ Panel de Empleado (Ventas y Mostrador)' : '👔 Panel del Gerente de Tienda' %>
+            </h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                <%= user.nombre %> <%= user.apellidos %> — 
+                <span class="badge <%= user.rol === 'empleado' ? 'badge-empleado' : 'badge-gerente' %>">
+                    <%= user.rol.toUpperCase() %>
+                </span> 
+                (<%= user.correo %>)
+            </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <a class="btn btn-sm btn-green" href="/ventas/create">➕ Registrar Venta</a>
+            <% if (user.rol === 'gerente' || user.rol === 'administrador') { %>
+                <a class="btn btn-sm" href="/productos/create">➕ Nuevo Producto</a>
+                <a class="btn btn-sm btn-gray" href="/usuarios">👥 Administrar Clientes</a>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- TARJETAS DE ESTADÍSTICAS DEL GERENTE / EMPLEADO -->
+<div class="grid">
+    <div class="card">
+        <h3>🛒 Total Ventas Generadas</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #4ade80; margin: 4px 0;"><%= totalVentas %></p>
+        <p style="font-size: 0.85rem; margin: 0;"><a href="/ventas" style="color: #4ade80;">Ver historial completo de ventas ➔</a></p>
+    </div>
+    <div class="card">
+        <h3>👥 Total Clientes Registrados</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #fde047; margin: 4px 0;"><%= totalClientes %></p>
+        <p style="font-size: 0.85rem; margin: 0;">Clientes que compran en plataforma y mostrador.</p>
+    </div>
+    <div class="card">
+        <h3>📦 Mis Productos Publicados</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #38bdf8; margin: 4px 0;"><%= misProductosCount %></p>
+        <p style="font-size: 0.85rem; margin: 0;">Artículos asignados con tu ID de vendedor.</p>
+    </div>
+</div>
+
+<!-- REGISTRO RECIENTE DE VENTAS EN TIENDA (CONEXIÓN EN TIEMPO REAL) -->
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+            <h2 style="margin: 0; font-size: 1.3rem;">🛒 Ventas Recientes en la Tienda</h2>
+            <p style="margin: 4px 0 0; font-size: 0.85rem; color: #94a3b8;">
+                Aquí se reflejan automáticamente las compras que realizan los clientes en el catálogo.
+            </p>
+        </div>
+        <a class="btn btn-sm btn-green" href="/ventas/create">➕ Nueva Venta Mostrador</a>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Folio</th>
+                    <th>Fecha</th>
+                    <th>Producto Comprado</th>
+                    <th>Cliente</th>
+                    <th>Vendedor Acreditado</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof ventas !== 'undefined' && ventas && ventas.length > 0) { %>
+                    <% ventas.slice(0, 6).forEach(function(v) { %>
+                        <tr>
+                            <td><strong>#<%= String(v.id).padStart(4, '0') %></strong></td>
+                            <td style="color: #94a3b8; font-size: 0.85rem;"><%= v.fechaFormatted %></td>
+                            <td>
+                                <strong><%= v.producto ? v.producto.nombre : 'Producto #' + v.producto_id %></strong>
+                            </td>
+                            <td>
+                                👤 <%= v.cliente ? v.cliente.nombre + ' ' + v.cliente.apellidos : 'Cliente #' + v.cliente_id %>
+                                <span style="display: block; font-size: 0.78rem; color: #64748b;"><%= v.cliente ? v.cliente.correo : '' %></span>
+                            </td>
+                            <td>
+                                🏢 <%= v.vendedor ? v.vendedor.nombre + ' ' + v.vendedor.apellidos : 'Vendedor #' + v.vendedor_id %>
+                            </td>
+                            <td>
+                                <strong style="color: #4ade80; font-size: 1.05rem;">$<%= Number(v.total).toFixed(2) %> MXN</strong>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="6" style="text-align: center; padding: 20px;">Aún no hay ventas registradas en la tienda.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MIS PRODUCTOS A LA VENTA (SI TIENE ARTÍCULOS ASIGNADOS) -->
+<% if (user.rol === 'gerente' || user.rol === 'administrador') { %>
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="margin: 0; font-size: 1.3rem;">📦 Artículos bajo tu gestión (Vendedor)</h2>
+        <a class="btn btn-sm" href="/productos/create">+ Agregar Artículo</a>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Existencia</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof misProductos !== 'undefined' && misProductos && misProductos.length > 0) { %>
+                    <% misProductos.forEach(function(p) { %>
+                        <tr>
+                            <td><%= p.id %></td>
+                            <td><strong><%= p.nombre %></strong></td>
+                            <td style="color: #38bdf8; font-weight: bold;">$<%= Number(p.precio).toFixed(2) %></td>
+                            <td><strong style="color: <%= p.existencia > 0 ? '#4ade80' : '#f87171' %>;"><%= p.existencia %> unidades</strong></td>
+                            <td>
+                                <a class="btn btn-sm btn-gray" href="/productos/<%= p.id %>/edit">Editar</a>
+                                <form class="inline" method="POST" action="/productos/<%= p.id %>?_method=DELETE" onsubmit="return confirm('¿Eliminar producto?')">
+                                    <button class="btn btn-sm btn-red" type="submit">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align: center;">No tienes productos registrados con tu ID.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<% } %>
+
+<%- include('../partials/footer') %>

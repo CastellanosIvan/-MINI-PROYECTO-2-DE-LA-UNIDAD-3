@@ -1,0 +1,31 @@
+<%- include('partials/header', { title: 'Ubicación' }) %>
+
+<div class="card">
+    <h1>Ubicación</h1>
+    <p><strong>Dirección:</strong> Tuxtla Gutiérrez, Chiapas, México.</p>
+    <p><strong>Horario:</strong> Lunes a sábado de 9:00 a 19:00 h.</p>
+
+    <!-- Contenedor del mapa exacto -->
+    <div style="margin-top: 20px;">
+        <div style="width: 100%; height: 350px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3820.0114890129676!2d-93.190941!3d16.776104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTbCsDQ2JzM0LjAiTiA5M8KwMTEnMjcuNCJX!5e0!3m2!1ses-419!2smx!4v1792131383973!5m2!1ses-419!2smx" 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="strict-origin-when-cross-origin">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Enlace para abrir en pantalla completa -->
+    <p style="margin-top: 15px; text-align: center;">
+        <a href="https://maps.app.goo.gl/DfaQ5KARzMDAyof26" target="_blank" style="text-decoration: none; color: #007bff;">
+            🗺️ Abrir en Google Maps (Pantalla completa)
+        </a>
+    </p>
+</div>
+
+<%- include('partials/footer') %>

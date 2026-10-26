@@ -1,0 +1,213 @@
+<%- include('partials/header', { title: 'Diagrama Entidad-Relación y Eloquent' }) %>
+
+<style>
+    .er-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 20px;
+        margin: 24px 0;
+    }
+    .table-card {
+        background: #0f111a;
+        border: 2px solid #282d42;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .table-header {
+        background: #1c2238;
+        padding: 10px 14px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #282d42;
+        font-size: 0.95rem;
+    }
+    .table-body {
+        padding: 8px 0;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 0.85rem;
+    }
+    .col-row {
+        padding: 6px 14px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #1a1e2e;
+    }
+    .col-row:last-child { border-bottom: 0; }
+    .col-pk { color: #fde047; font-weight: bold; }
+    .col-fk { color: #60a5fa; font-weight: bold; }
+    .col-type { color: #818cf8; }
+    .rel-badge { font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; background: #283256; color: #93c5fd; }
+</style>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">📊 Diagrama Entidad-Relación (ER)</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                Modelos de base de datos, claves foráneas y relaciones Eloquent implementadas para el E-commerce.
+            </p>
+        </div>
+        <a class="btn btn-sm btn-gray" href="/productos">📦 Ir al Catálogo</a>
+    </div>
+
+    <!-- ESQUEMA CONCEPTUAL GRÁFICO -->
+    <div style="background: #08090e; border: 1px solid #23273a; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #60a5fa; margin-top: 0;">🗺️ Mapa Conceptual de Cardinalidades</h3>
+        <pre style="font-family: 'Consolas', monospace; color: #93c5fd; font-size: 0.95rem; line-height: 1.5; margin: 0; overflow-x: auto;">
+┌─────────────────────────────────┐
+│     Usuario (Authenticatable)   │◄─────────────────────────────────────┐
+└────────────────┬────────────────┘                                      │
+                 │ 1                                                     │
+                 │                                                       │
+                 ▼ N (usuario_id = Vendedor)                             │
+┌────────────────┴────────────────┐                                      │
+│           Producto              │                                      │
+└───────┬───────────────────┬─────┘                                      │
+        │ N                 │ 1                                          │
+        ▼                   ▼                                            │
+┌───────┴────────┐  ┌───────┴────────┐                                   │
+│ categoria_prod │  │     Venta      ├─ 1:N (cliente_id = Comprador) ────┤
+└───────┬────────┘  └────────────────┘   1:N (vendedor_id = Vendedor) ───┘
+        ▼ N
+┌───────┴────────┐
+│   Categoria    │
+└────────────────┘
+        </pre>
+        <p style="color: #94a3b8; font-size: 0.85rem; margin: 12px 0 0;">
+            🔗 <strong>hasManyThrough:</strong> <code>Usuario ➔ hasManyThrough(Categoria, Producto)</code> permite obtener directamente todas las categorías que comercializa un usuario a través de sus productos.
+        </p>
+    </div>
+
+    <!-- TABLAS DE BASE DE DATOS (DICCIONARIO ER) -->
+    <h3 style="margin-top: 30px; border-bottom: 1px solid #333; padding-bottom: 8px;">📑 Estructura de Tablas y Relaciones</h3>
+
+    <div class="er-grid">
+        <!-- TABLA 1: USUARIOS -->
+        <div class="table-card">
+            <div class="table-header">
+                <span style="color: #f87171;">👤 usuarios</span>
+                <span class="rel-badge">Authenticatable</span>
+            </div>
+            <div class="table-body">
+                <div class="col-row"><span class="col-pk">🔑 id (PK)</span><span class="col-type">bigint UNSIGNED</span></div>
+                <div class="col-row"><span>nombre</span><span class="col-type">varchar(255)</span></div>
+                <div class="col-row"><span>apellidos</span><span class="col-type">varchar(255)</span></div>
+                <div class="col-row"><span>correo</span><span class="col-type">varchar(255) UNIQUE</span></div>
+                <div class="col-row"><span>clave</span><span class="col-type">varchar(255)</span></div>
+                <div class="col-row"><span>rol</span><span class="col-type">enum(admin, gerente, cliente)</span></div>
+                <div class="col-row"><span>created_at</span><span class="col-type">timestamp</span></div>
+            </div>
+        </div>
+
+        <!-- TABLA 2: PRODUCTOS -->
+        <div class="table-card">
+            <div class="table-header">
+                <span style="color: #38bdf8;">📦 productos</span>
+                <span class="rel-badge">1 : N con Usuario</span>
+            </div>
+            <div class="table-body">
+                <div class="col-row"><span class="col-pk">🔑 id (PK)</span><span class="col-type">bigint UNSIGNED</span></div>
+                <div class="col-row"><span>nombre</span><span class="col-type">varchar(255)</span></div>
+                <div class="col-row"><span>descripcion</span><span class="col-type">text nullable</span></div>
+                <div class="col-row"><span>precio</span><span class="col-type">decimal(10,2)</span></div>
+                <div class="col-row"><span>existencia</span><span class="col-type">int</span></div>
+                <div class="col-row"><span class="col-fk">🔗 usuario_id (FK)</span><span class="col-type">usuarios.id (Vendedor)</span></div>
+                <div class="col-row"><span>created_at</span><span class="col-type">timestamp</span></div>
+            </div>
+        </div>
+
+        <!-- TABLA 3: CATEGORIAS -->
+        <div class="table-card">
+            <div class="table-header">
+                <span style="color: #fde047;">🏷️ categorias</span>
+                <span class="rel-badge">N : N con Producto</span>
+            </div>
+            <div class="table-body">
+                <div class="col-row"><span class="col-pk">🔑 id (PK)</span><span class="col-type">bigint UNSIGNED</span></div>
+                <div class="col-row"><span>nombre</span><span class="col-type">varchar(255) UNIQUE</span></div>
+                <div class="col-row"><span>descripcion</span><span class="col-type">text nullable</span></div>
+                <div class="col-row"><span>created_at</span><span class="col-type">timestamp</span></div>
+            </div>
+        </div>
+
+        <!-- TABLA 4: TABLA PIVOTE -->
+        <div class="table-card">
+            <div class="table-header">
+                <span style="color: #a78bfa;">🔗 categoria_producto</span>
+                <span class="rel-badge">Pivote N : N</span>
+            </div>
+            <div class="table-body">
+                <div class="col-row"><span class="col-pk">🔑 id (PK)</span><span class="col-type">bigint UNSIGNED</span></div>
+                <div class="col-row"><span class="col-fk">🔗 producto_id (FK)</span><span class="col-type">productos.id (cascade)</span></div>
+                <div class="col-row"><span class="col-fk">🔗 categoria_id (FK)</span><span class="col-type">categorias.id (cascade)</span></div>
+                <div class="col-row"><span style="color:#64748b;">UNIQUE(prod_id, cat_id)</span><span class="col-type">index</span></div>
+            </div>
+        </div>
+
+        <!-- TABLA 5: VENTAS -->
+        <div class="table-card">
+            <div class="table-header">
+                <span style="color: #4ade80;">🛒 ventas</span>
+                <span class="rel-badge">1 : N Triple</span>
+            </div>
+            <div class="table-body">
+                <div class="col-row"><span class="col-pk">🔑 id (PK)</span><span class="col-type">bigint UNSIGNED</span></div>
+                <div class="col-row"><span class="col-fk">🔗 producto_id (FK)</span><span class="col-type">productos.id</span></div>
+                <div class="col-row"><span class="col-fk">🔗 vendedor_id (FK)</span><span class="col-type">usuarios.id (Vendedor)</span></div>
+                <div class="col-row"><span class="col-fk">🔗 cliente_id (FK)</span><span class="col-type">usuarios.id (Cliente)</span></div>
+                <div class="col-row"><span>fecha</span><span class="col-type">datetime</span></div>
+                <div class="col-row"><span>total</span><span class="col-type">decimal(10,2)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMOSTRACIÓN EN VIVO: hasManyThrough -->
+    <div class="card" style="margin-top: 30px; border-color: #2b3046;">
+        <h3 style="color: #60a5fa; margin-top: 0;">🧪 Consulta hasManyThrough en Tiempo Real</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem;">
+            Demuestra cómo el modelo <code>Usuario</code> accede a las categorías de sus productos mediante <code>$usuario->categorias</code>:
+        </p>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vendedor (Usuario)</th>
+                        <th>Rol</th>
+                        <th>Productos Activos</th>
+                        <th>Categorías Obtenidas (hasManyThrough)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (typeof vendedoresThrough !== 'undefined' && vendedoresThrough && vendedoresThrough.length > 0) { %>
+                        <% vendedoresThrough.forEach(function(item) { %>
+                            <tr>
+                                <td>
+                                    <strong><%= item.vendedor.nombre %> <%= item.vendedor.apellidos %></strong>
+                                    <span style="display: block; font-size: 0.78rem; color: #64748b;"><%= item.vendedor.correo %></span>
+                                </td>
+                                <td><span class="badge <%= item.vendedor.rol === 'administrador' ? 'badge-admin' : 'badge-gerente' %>"><%= item.vendedor.rol.toUpperCase() %></span></td>
+                                <td><%= item.productos.length %> productos publicados</td>
+                                <td>
+                                    <% if (item.categorias && item.categorias.length > 0) { %>
+                                        <% item.categorias.forEach(function(c) { %>
+                                            <span class="badge badge-tag"><%= c.nombre %></span>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <span style="color: #64748b;">Sin categorías asociadas</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr><td colspan="4" style="text-align: center;">No hay vendedores registrados actualmente.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

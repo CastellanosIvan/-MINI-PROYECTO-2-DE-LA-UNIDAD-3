@@ -1,11 +1,13 @@
-<div align="center">
+# CazFixt – Primera entrega (Laravel 11)
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+## Instalación
+1. `composer create-project laravel/laravel cazfixt`
+2. Copia el contenido de este paquete sobre el proyecto (reemplaza `routes/web.php`, `bootstrap/app.php`, `app/Models/User.php`, `database/seeders/DatabaseSeeder.php`).
+3. Configura la BD en `.env` (MySQL o SQLite).
+4. `php artisan migrate --seed`
+5. `php artisan serve` → http://127.0.0.1:8000
 
-  <h1>Built with AI Studio</h2>
-
-  <p>The fastest path from prompt to production with Gemini.</p>
-
-  <a href="https://aistudio.google.com/apps">Start building</a>
-
-</div>
+## Usuarios de prueba (contraseña: Password123)
+- gerente@cazfixt.test
+- empleado@cazfixt.test
+- cliente@cazfixt.test

@@ -1,0 +1,98 @@
+<%- include('../partials/header', { title: 'Gestión de Usuarios' }) %>
+
+<div class="card">
+    <div class="row" style="justify-content: space-between; margin-bottom: 16px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">
+                <%= user.rol === 'gerente' ? '👥 Gestión de Clientes' : '👥 Gestión Global de Usuarios' %>
+            </h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                <%= user.rol === 'gerente' 
+                    ? 'Como Gerente, puedes consultar y editar información de clientes registrados.' 
+                    : 'Panel de administración total de usuarios (Authenticatable).' %>
+            </p>
+        </div>
+        <!-- Solo Administrador puede crear nuevos usuarios -->
+        <% if (user && user.rol === 'administrador') { %>
+            <a class="btn" href="/usuarios/create">➕ Nuevo Usuario</a>
+        <% } %>
+    </div>
+
+    <!-- Filtros -->
+    <form method="GET" action="/usuarios" class="row" style="margin-bottom: 20px; background: var(--fondo-tarjeta-alt); padding: 14px; border-radius: 8px;">
+        <div style="flex: 2; min-width: 200px;">
+            <label style="margin-top: 0;">Buscar por nombre o correo</label>
+            <input type="text" name="q" value="<%= typeof q !== 'undefined' ? q : '' %>" placeholder="Buscar...">
+        </div>
+        <% if (user.rol === 'administrador') { %>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="margin-top: 0;">Rol</label>
+                <select name="rol">
+                    <option value="">Todos los roles</option>
+                    <% roles.forEach(function(r) { %>
+                        <option value="<%= r %>" <%= (typeof selectedRol !== 'undefined' && selectedRol === r) ? 'selected' : '' %>>
+                            <%= r.charAt(0).toUpperCase() + r.slice(1) %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+        <% } %>
+        <div style="display: flex; gap: 8px; align-items: flex-end; margin-top: 22px;">
+            <button class="btn" type="submit">Filtrar</button>
+            <a class="btn btn-gray" href="/usuarios">Limpiar</a>
+        </div>
+    </form>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Nombre Completo</th>
+                    <th>Correo Institucional</th>
+                    <th>Rol</th>
+                    <th>Fecha Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (usuarios && usuarios.length > 0) { %>
+                    <% usuarios.forEach(function(u) { %>
+                        <tr>
+                            <td><%= u.id %></td>
+                            <td><strong><%= u.nombre %> <%= u.apellidos %></strong></td>
+                            <td><code><%= u.correo %></code></td>
+                            <td>
+                                <span class="badge <%= u.rol === 'administrador' ? 'badge-admin' : (u.rol === 'gerente' ? 'badge-gerente' : 'badge-cliente') %>">
+                                    <%= u.rol.toUpperCase() %>
+                                </span>
+                            </td>
+                            <td style="color: #94a3b8;"><%= u.fechaRegistro %></td>
+                            <td>
+                                <!-- Regla de UsuarioPolicy: Admin puede editar a todos; Gerente solo a clientes -->
+                                <% const puedeEditar = (user.rol === 'administrador') || (user.rol === 'gerente' && u.rol === 'cliente'); %>
+                                
+                                <% if (puedeEditar) { %>
+                                    <a class="btn btn-sm" href="/usuarios/<%= u.id %>/edit">Editar</a>
+                                <% } else { %>
+                                    <span style="color: #64748b; font-size: 0.8rem;">Solo lectura</span>
+                                <% } %>
+
+                                <!-- Solo Administrador puede eliminar usuarios -->
+                                <% if (user.rol === 'administrador' && u.id !== user.id) { %>
+                                    <form class="inline" method="POST" action="/usuarios/<%= u.id %>?_method=DELETE" onsubmit="return confirm('¿Eliminar al usuario <%= u.nombre %>?')">
+                                        <button class="btn btn-sm btn-red" type="submit">Eliminar</button>
+                                    </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="6" style="text-align: center;">No se encontraron usuarios.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

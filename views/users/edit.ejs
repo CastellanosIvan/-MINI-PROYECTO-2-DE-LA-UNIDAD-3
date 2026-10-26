@@ -1,0 +1,10 @@
+<%- include('../partials/header', { title: 'Editar usuario' }) %>
+
+<div class="card narrow">
+    <h2>Editar usuario</h2>
+    <form method="POST" action="/usuarios/<%= targetUser.id %>?_method=PUT" novalidate>
+        <%- include('_form') %>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,59 @@
+<%- include('../partials/header', { title: 'Registro Global de Ventas' }) %>
+
+<div class="card">
+    <div class="row" style="justify-content: space-between; margin-bottom: 20px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">🛒 Registro de Ventas</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                Auditoría de transacciones: <strong>Venta ➔ belongsTo(Producto)</strong>, <strong>belongsTo(Usuario, 'cliente_id')</strong>, <strong>belongsTo(Usuario, 'vendedor_id')</strong>.
+            </p>
+        </div>
+        <!-- Solo personal de tienda / ventas -->
+        <% if (user && (user.rol === 'administrador' || user.rol === 'gerente')) { %>
+            <a class="btn btn-green btn-sm" href="/ventas/create">➕ Registrar Venta en Mostrador</a>
+        <% } %>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Folio</th>
+                    <th>Fecha y Hora</th>
+                    <th>Producto</th>
+                    <th>Cliente Comprador</th>
+                    <th>Vendedor Acreditado</th>
+                    <th>Total Pagado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (ventas && ventas.length > 0) { %>
+                    <% ventas.forEach(function(v) { %>
+                        <tr>
+                            <td><strong>#<%= String(v.id).padStart(4, '0') %></strong></td>
+                            <td style="color: #94a3b8;"><%= v.fechaFormatted %></td>
+                            <td>
+                                <strong><%= v.producto ? v.producto.nombre : 'Producto #' + v.producto_id %></strong>
+                            </td>
+                            <td>
+                                👤 <%= v.cliente ? v.cliente.nombre + ' ' + v.cliente.apellidos : 'Cliente #' + v.cliente_id %>
+                                <span style="display: block; font-size: 0.78rem; color: #64748b;"><%= v.cliente ? v.cliente.correo : '' %></span>
+                            </td>
+                            <td>
+                                🏢 <%= v.vendedor ? v.vendedor.nombre + ' ' + v.vendedor.apellidos : 'Vendedor #' + v.vendedor_id %>
+                                <span style="display: block; font-size: 0.78rem; color: #64748b;"><%= v.vendedor ? v.vendedor.rol.toUpperCase() : '' %></span>
+                            </td>
+                            <td>
+                                <strong style="color: #4ade80; font-size: 1.05rem;">$<%= Number(v.total).toFixed(2) %> MXN</strong>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="6" style="text-align: center; padding: 24px;">No hay ventas registradas en el sistema.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

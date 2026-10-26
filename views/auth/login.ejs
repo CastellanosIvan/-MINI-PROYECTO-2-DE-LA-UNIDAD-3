@@ -1,0 +1,72 @@
+<%- include('../partials/header', { title: 'Iniciar sesión' }) %>
+
+<div class="card narrow">
+    <h2 style="margin-top: 0;">Iniciar sesión</h2>
+    <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 20px;">
+        Ingresa tus credenciales para acceder a tu panel de CazFixt según tu rol.
+    </p>
+
+    <form method="POST" action="/login" novalidate id="loginForm">
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" name="correo" value="<%= typeof correo !== 'undefined' ? correo : '' %>" placeholder="ejemplo@cazfixt.prueba" required autofocus>
+        <% if (typeof errors !== 'undefined' && errors.correo) { %>
+            <div class="error"><%= errors.correo %></div>
+        <% } %>
+
+        <label for="clave">Contraseña</label>
+        <input type="password" id="clave" name="clave" placeholder="••••••••" required>
+        <% if (typeof errors !== 'undefined' && errors.clave) { %>
+            <div class="error"><%= errors.clave %></div>
+        <% } %>
+
+        <label style="font-weight:normal; margin-top: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" name="remember" style="width:auto"> Recordarme en este equipo
+        </label>
+
+        <div style="margin-top: 24px; display: flex; gap: 10px;">
+            <button class="btn" type="submit" style="flex: 1;">Entrar</button>
+        </div>
+        <p style="margin-top: 18px; text-align: center; font-size: 0.9rem; color: #94a3b8;">
+            ¿Aún no tienes cuenta? <a href="/registro" style="color: #60a5fa;">Regístrate aquí</a>
+        </p>
+    </form>
+
+    <!-- ACCESOS RÁPIDOS PREDEFINIDOS DE PRUEBA -->
+    <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #23273a;">
+        <p style="font-size: 0.82rem; color: #94a3b8; margin: 0 0 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            ⚡ Usuarios de prueba predefinidos (Contraseña: <code style="color: #4ade80;">Password123</code>):
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" onclick="setQuickUser('gerente@cazfixt.prueba', 'Password123')" 
+                    style="display: flex; justify-content: space-between; align-items: center; background: #161a29; border: 1px solid #2b324c; border-radius: 6px; padding: 8px 12px; color: #fff; cursor: pointer; text-align: left; font-size: 0.88rem; transition: background 0.2s;">
+                <span>👔 <strong>gerente@cazfixt.prueba</strong></span>
+                <span class="badge badge-gerente">GERENTE</span>
+            </button>
+            <button type="button" onclick="setQuickUser('empleado@cazfixt.prueba', 'Password123')" 
+                    style="display: flex; justify-content: space-between; align-items: center; background: #161a29; border: 1px solid #2b324c; border-radius: 6px; padding: 8px 12px; color: #fff; cursor: pointer; text-align: left; font-size: 0.88rem; transition: background 0.2s;">
+                <span>🛠️ <strong>empleado@cazfixt.prueba</strong></span>
+                <span class="badge badge-empleado">EMPLEADO</span>
+            </button>
+            <button type="button" onclick="setQuickUser('cliente@cazfixt.prueba', 'Password123')" 
+                    style="display: flex; justify-content: space-between; align-items: center; background: #161a29; border: 1px solid #2b324c; border-radius: 6px; padding: 8px 12px; color: #fff; cursor: pointer; text-align: left; font-size: 0.88rem; transition: background 0.2s;">
+                <span>👤 <strong>cliente@cazfixt.prueba</strong></span>
+                <span class="badge badge-cliente">CLIENTE</span>
+            </button>
+            <button type="button" onclick="setQuickUser('admin@cazfixt.prueba', 'Password123')" 
+                    style="display: flex; justify-content: space-between; align-items: center; background: #161a29; border: 1px solid #2b324c; border-radius: 6px; padding: 8px 12px; color: #fff; cursor: pointer; text-align: left; font-size: 0.88rem; transition: background 0.2s;">
+                <span>👑 <strong>admin@cazfixt.prueba</strong></span>
+                <span class="badge badge-admin">ADMINISTRADOR</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function setQuickUser(email, pass) {
+    document.getElementById('correo').value = email;
+    document.getElementById('clave').value = pass;
+    document.getElementById('loginForm').submit();
+}
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= typeof title !== 'undefined' && title ? title + ' | CazFixt' : 'CazFixt — Taller & E-commerce' %></title>
+    <link rel="icon" href="/favicon.ico">
+    <style>
+        :root { 
+            --fondo: #000000; 
+            --fondo-tarjeta: #111116; 
+            --fondo-tarjeta-alt: #181924; 
+            --borde: #232533; 
+            --borde-tarjeta: #2e3144; 
+            --txt: #ffffff; 
+            --txt-secundario: #a0a6b8; 
+            --azul2: #1565c0; 
+            --azul-hover: #0d47a1; 
+            --rojo: #c62828; 
+            --verde: #2e7d32; 
+            --dorado: #eab308;
+        }
+        * { box-sizing:border-box; }
+        body { margin:0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background:var(--fondo); color:var(--txt); }
+
+        /* BARRA DE NAVEGACIÓN PRINCIPAL */
+        nav { 
+            background: #000000; 
+            color:#fff; 
+            display:flex; 
+            flex-wrap:wrap; 
+            align-items:center; 
+            gap:4px; 
+            padding:14px 28px; 
+            border-bottom: 1px solid var(--borde); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        /* LOGO CAZFIXT */
+        nav .brand { margin-right:16px; padding: 0 !important; display: flex; align-items: center; text-decoration: none; }
+        nav .brand:hover { background: transparent !important; }
+        nav .brand img { height: 35px; vertical-align: middle; }
+        
+        /* ENLACES DEL MENÚ */
+        nav a, nav button { 
+            color:#cbd5e1; 
+            text-decoration:none; 
+            padding:8px 12px; 
+            border-radius:6px; 
+            background:none; 
+            border:0; 
+            font-size:0.92rem; 
+            cursor:pointer; 
+            transition: all 0.2s; 
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        nav a:hover, nav button:hover { background: #1e2130; color: #fff; }
+        
+        /* CONTENEDOR PRINCIPAL */
+        main { max-width:1080px; margin:28px auto; padding:0 20px; }
+        
+        /* TARJETAS OSCURAS */
+        .card { 
+            background:var(--fondo-tarjeta); 
+            border: 1px solid var(--borde-tarjeta); 
+            border-radius:10px; 
+            padding:24px; 
+            margin-bottom:20px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .card h1, .card h2, .card h3, .card h4 { margin-top: 0; color: #fff; }
+        .card p { color: var(--txt-secundario); }
+        
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+        .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+
+        /* BOTONES */
+        .btn { 
+            display:inline-flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background:var(--azul2); 
+            color:#fff; 
+            padding:9px 16px; 
+            border-radius:6px; 
+            border:0; 
+            text-decoration:none; 
+            cursor:pointer; 
+            font-size:.92rem; 
+            font-weight: bold; 
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: var(--azul-hover); color: #fff; }
+        .btn-sm { padding: 5px 10px; font-size: 0.82rem; }
+        .btn-red { background:var(--rojo); } 
+        .btn-red:hover { background: #b71c1c; }
+        .btn-green { background:var(--verde); }
+        .btn-green:hover { background: #1b5e20; }
+        .btn-gray { background:#333; color: white; border: 1px solid #555; }
+        .btn-gray:hover { background: #444; }
+        
+        /* FORMULARIOS */
+        label { display:block; margin:14px 0 4px; font-weight:600; color: #ccc; font-size: 0.9rem; }
+        input, select, textarea { 
+            width:100%; 
+            padding:10px; 
+            border:1px solid #444; 
+            border-radius:6px; 
+            font-size:1rem; 
+            background: #000; 
+            color: #fff; 
+            box-sizing: border-box; 
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--azul2); }
+        .error { color:#ff6b6b; font-size:.88rem; margin-top:4px; font-weight: 500; }
+        
+        /* ALERTAS */
+        .alert { padding:12px 16px; border-radius:6px; margin-bottom:16px; font-size: 0.92rem; }
+        .alert-ok { background:#0a2a16; color:#a3cfbb; border: 1px solid var(--verde); } 
+        .alert-err { background:#3b0a0a; color:#ea868f; border: 1px solid var(--rojo); }
+        
+        /* TABLAS MODO OSCURO */
+        table { width:100%; border-collapse:collapse; font-size: 0.92rem; } 
+        th, td { padding:12px 10px; text-align:left; border-bottom:1px solid #333; }
+        th { background:#1a1a1a; color: #ccc; font-weight: 600; } 
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        
+        /* BADGES */
+        .badge { display: inline-flex; align-items: center; padding:3px 10px; border-radius:12px; font-size:.78rem; font-weight: 600; }
+        .badge-admin { background: rgba(198, 40, 40, 0.25); color: #ff8a80; border: 1px solid #c62828; }
+        .badge-gerente { background: rgba(234, 179, 8, 0.25); color: #fde047; border: 1px solid #ca8a04; }
+        .badge-empleado { background: rgba(56, 189, 248, 0.25); color: #7dd3fc; border: 1px solid #0284c7; }
+        .badge-cliente { background: rgba(21, 101, 192, 0.25); color: #90caf9; border: 1px solid #1565c0; }
+        .badge-tag { background: #222; color: #eee; border: 1px solid #444; margin-right: 4px; margin-bottom: 4px; }
+
+        .inline { display:inline; } 
+        .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .narrow { max-width:480px; margin:auto; } 
+        footer { text-align:center; padding:24px; color:#666; font-size:.9rem; border-top: 1px solid #222; margin-top: 40px; }
+        .pagination { margin-top:16px; display: flex; gap: 6px; align-items: center; }
+        .pagination a, .pagination span { padding: 6px 12px; border-radius: 4px; border: 1px solid #333; color: #fff; text-decoration: none; }
+        .pagination .active { background: var(--azul2); border-color: var(--azul2); }
+        pre.log-viewer { background: #000; padding: 14px; border-radius: 6px; border: 1px solid #333; color: #38bdf8; font-size: 0.85rem; overflow-x: auto; font-family: monospace; line-height: 1.5; }
+    </style>
+    <script>
+        // Sincronización robusta de sesión en iframes para navegadores con bloqueo estricto de cookies de terceros
+        (function() {
+            var sToken = "<%= typeof authToken !== 'undefined' && authToken ? authToken : '' %>";
+            if (sToken) {
+                try { sessionStorage.setItem('cazfixt_token', sToken); } catch(e){}
+            }
+            var storedToken = '';
+            try { storedToken = sessionStorage.getItem('cazfixt_token'); } catch(e){}
+            if (storedToken) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.querySelectorAll('a[href^="/"]').forEach(function(el) {
+                        var href = el.getAttribute('href');
+                        if (href && !href.startsWith('//') && !href.includes('auth_token=')) {
+                            var sep = href.indexOf('?') !== -1 ? '&' : '?';
+                            el.href = href + sep + 'auth_token=' + encodeURIComponent(storedToken);
+                        }
+                    });
+                    document.querySelectorAll('form').forEach(function(f) {
+                        if (!f.querySelector('input[name="auth_token"]')) {
+                            var inp = document.createElement('input');
+                            inp.type = 'hidden';
+                            inp.name = 'auth_token';
+                            inp.value = storedToken;
+                            f.appendChild(inp);
+                        }
+                    });
+                });
+            }
+        })();
+    </script>
+</head>
+<body>
+
+<nav>
+    <!-- Logo CazFixt Original -->
+    <a class="brand" href="/">
+        <img src="/img/logo.png" alt="Logo CazFixt">
+    </a>
+
+    <!-- Enlaces Institucionales Básicos -->
+    <a href="/">Inicio</a>
+    <a href="/quienes-somos">Quiénes somos</a>
+    <a href="/mision-vision">Misión y visión</a>
+    <a href="/ubicacion">Ubicación</a>
+    <a href="/contacto">Contáctanos</a>
+
+    <!-- Catálogo de Productos (Público para todos: visitantes, clientes, empleados) -->
+    <a href="/productos">📦 Catálogo</a>
+
+    <!-- ENLACES DIFERENCIADOS POR ROL -->
+    <% if (user) { %>
+        <% if (user.rol === 'gerente') { %>
+            <!-- Enlaces del Gerente: Categorías, Ventas, Gestión de Clientes -->
+            <a href="/categorias">🏷️ Categorías</a>
+            <a href="/ventas">🛒 Ventas</a>
+            <a href="/usuarios">👥 Clientes</a>
+        <% } else if (user.rol === 'empleado') { %>
+            <!-- Enlaces del Empleado: Ventas y Registro en Mostrador -->
+            <a href="/ventas">🛒 Ventas</a>
+            <a href="/ventas/create">➕ Registrar Venta</a>
+        <% } else if (user.rol === 'administrador') { %>
+            <!-- Enlaces del Administrador: Control Total, Bitácoras, Diagrama ER -->
+            <a href="/categorias">🏷️ Categorías</a>
+            <a href="/ventas">🛒 Ventas</a>
+            <a href="/usuarios">👥 Usuarios</a>
+            <a href="/bitacoras" style="color: #a78bfa;">📜 Bitácoras AAA</a>
+            <a href="/diagrama-er" style="color: #60a5fa;">📊 Diagrama ER</a>
+        <% } %>
+    <% } %>
+
+    <!-- AUTENTICACIÓN / USUARIO -->
+    <% if (!user) { %>
+        <a href="/login" style="margin-left:auto;">Iniciar sesión</a>
+        <a href="/registro">Registrarse</a>
+    <% } else { %>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+            <a href="/dashboard" style="background:#1565c0; color:#fff;">Mi panel</a>
+            <span style="font-size:0.85rem; color:#bbb;">
+                <%= user.nombre %> 
+                <span class="badge <%= user.rol === 'administrador' ? 'badge-admin' : (user.rol === 'gerente' ? 'badge-gerente' : (user.rol === 'empleado' ? 'badge-empleado' : 'badge-cliente')) %>">
+                    <%= user.rol.toUpperCase() %>
+                </span>
+            </span>
+            <form class="inline" method="POST" action="/logout">
+                <button type="submit" onclick="try{sessionStorage.removeItem('cazfixt_token');}catch(e){}">Cerrar sesión</button>
+            </form>
+        </div>
+    <% } %>
+</nav>
+
+<main>
+    <% if (typeof success !== 'undefined' && success) { %> 
+        <div class="alert alert-ok"><%= success %></div> 
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>   
+        <div class="alert alert-err"><%= error %></div> 
+    <% } %>

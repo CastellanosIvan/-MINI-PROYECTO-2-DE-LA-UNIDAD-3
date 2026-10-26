@@ -1,0 +1,31 @@
+<label for="name">Nombre completo</label>
+<input type="text" id="name" name="name" value="<%= typeof targetUser !== 'undefined' && targetUser ? targetUser.name : '' %>" required>
+<% if (typeof errors !== 'undefined' && errors.name) { %><div class="error"><%= errors.name %></div><% } %>
+
+<label for="email">Correo electrónico</label>
+<input type="email" id="email" name="email" value="<%= typeof targetUser !== 'undefined' && targetUser ? targetUser.email : '' %>" required>
+<% if (typeof errors !== 'undefined' && errors.email) { %><div class="error"><%= errors.email %></div><% } %>
+
+<label for="phone">Teléfono (10 dígitos)</label>
+<input type="text" id="phone" name="phone" maxlength="10" value="<%= typeof targetUser !== 'undefined' && targetUser && targetUser.phone ? targetUser.phone : '' %>">
+<% if (typeof errors !== 'undefined' && errors.phone) { %><div class="error"><%= errors.phone %></div><% } %>
+
+<label for="role">Rol</label>
+<select id="role" name="role" required>
+    <% roles.forEach(function(r) { %>
+        <option value="<%= r %>" <%= (typeof targetUser !== 'undefined' && targetUser && targetUser.role === r) ? 'selected' : '' %>><%= r.charAt(0).toUpperCase() + r.slice(1) %></option>
+    <% }); %>
+</select>
+<% if (typeof errors !== 'undefined' && errors.role) { %><div class="error"><%= errors.role %></div><% } %>
+
+<label for="password">Contraseña <%= (typeof targetUser !== 'undefined' && targetUser && targetUser.id) ? '(déjala vacía para no cambiarla)' : '' %></label>
+<input type="password" id="password" name="password" <%= (typeof targetUser !== 'undefined' && targetUser && targetUser.id) ? '' : 'required' %>>
+<% if (typeof errors !== 'undefined' && errors.password) { %><div class="error"><%= errors.password %></div><% } %>
+
+<label for="password_confirmation">Confirmar contraseña</label>
+<input type="password" id="password_confirmation" name="password_confirmation">
+<% if (typeof errors !== 'undefined' && errors.password_confirmation) { %><div class="error"><%= errors.password_confirmation %></div><% } %>
+
+<br>
+<button class="btn" type="submit">Guardar</button>
+<a class="btn btn-gray" href="/usuarios">Cancelar</a>

@@ -1,0 +1,55 @@
+<%- include('../partials/header', { title: 'Categorías' }) %>
+
+<div class="card">
+    <div class="row" style="justify-content: space-between; margin-bottom: 20px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">🏷️ Categorías del E-commerce</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">Relación <strong>belongsToMany</strong>: Una categoría agrupa múltiples productos a través de la tabla pivote <code>categoria_producto</code>.</p>
+        </div>
+        <% if (user && (user.rol === 'administrador' || user.rol === 'gerente')) { %>
+            <a class="btn" href="/categorias/create">➕ Nueva Categoría</a>
+        <% } %>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Nombre de la Categoría</th>
+                    <th>Descripción</th>
+                    <th>Total Productos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (categorias && categorias.length > 0) { %>
+                    <% categorias.forEach(function(cat) { %>
+                        <tr>
+                            <td><%= cat.id %></td>
+                            <td><strong><%= cat.nombre %></strong></td>
+                            <td style="color: #94a3b8;"><%= cat.descripcion || '—' %></td>
+                            <td>
+                                <span class="badge badge-tag" style="font-size: 0.85rem;">
+                                    📦 <%= cat.totalProductos || 0 %> productos
+                                </span>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-gray" href="/categorias/<%= cat.id %>">Ver Productos</a>
+                                <% if (user && user.rol === 'administrador') { %>
+                                    <form class="inline" method="POST" action="/categorias/<%= cat.id %>?_method=DELETE" onsubmit="return confirm('¿Eliminar categoría <%= cat.nombre %>?')">
+                                        <button class="btn btn-sm btn-red" type="submit">Eliminar</button>
+                                    </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align: center;">No hay categorías registradas.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

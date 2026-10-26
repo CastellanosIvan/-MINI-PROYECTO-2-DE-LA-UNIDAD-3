@@ -1,0 +1,46 @@
+<%- include('../partials/header', { title: 'Registro de Cuenta' }) %>
+
+<div class="card narrow">
+    <h2>📝 Crear cuenta</h2>
+    <p style="font-size: 0.88rem; color: #94a3b8;">
+        El registro público crea automáticamente usuarios con rol <span class="badge badge-cliente">CLIENTE</span>.
+    </p>
+
+    <form method="POST" action="/registro" novalidate>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" value="<%= typeof form !== 'undefined' && form.nombre ? form.nombre : '' %>" required>
+                <% if (typeof errors !== 'undefined' && errors.nombre) { %>
+                    <div class="error"><%= errors.nombre %></div>
+                <% } %>
+            </div>
+            <div>
+                <label for="apellidos">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos" value="<%= typeof form !== 'undefined' && form.apellidos ? form.apellidos : '' %>" required>
+                <% if (typeof errors !== 'undefined' && errors.apellidos) { %>
+                    <div class="error"><%= errors.apellidos %></div>
+                <% } %>
+            </div>
+        </div>
+
+        <label for="correo">Correo Electrónico (correo)</label>
+        <input type="email" id="correo" name="correo" value="<%= typeof form !== 'undefined' && form.correo ? form.correo : '' %>" placeholder="ejemplo@tuxtla.tecnm.mx" required>
+        <% if (typeof errors !== 'undefined' && errors.correo) { %>
+            <div class="error"><%= errors.correo %></div>
+        <% } %>
+
+        <label for="clave">Contraseña (clave)</label>
+        <input type="password" id="clave" name="clave" placeholder="Mínimo 3 caracteres" required>
+        <% if (typeof errors !== 'undefined' && errors.clave) { %>
+            <div class="error"><%= errors.clave %></div>
+        <% } %>
+
+        <div style="margin-top: 24px; display: flex; gap: 10px;">
+            <button class="btn btn-green" type="submit" style="flex: 1;">Registrarme como Cliente</button>
+        </div>
+        <p style="margin-top: 16px; text-align: center;">¿Ya tienes cuenta? <a href="/login" style="color: #60a5fa;">Inicia sesión</a></p>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

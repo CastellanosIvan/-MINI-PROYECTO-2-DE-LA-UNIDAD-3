@@ -1,0 +1,53 @@
+<%- include('../partials/header', { title: 'Bitácoras del Sistema AAA' }) %>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">📜 Bitácoras del Sistema (AAA)</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                Archivos obligatorios generados mediante <code>Log::channel('canal')->info(...)</code> en <code>storage/logs/</code>.
+            </p>
+        </div>
+        <form method="POST" action="/bitacoras/limpiar" onsubmit="return confirm('¿Restablecer logs de prueba?')">
+            <button class="btn btn-sm btn-gray" type="submit">↺ Regenerar Entradas</button>
+        </form>
+    </div>
+
+    <!-- SECCIÓN 1: Autenticación Log -->
+    <div class="card" style="border-color: #2b3046;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0; color: #38bdf8;">1. 🔐 storage/logs/autenticacion.log</h3>
+            <span class="badge badge-admin">Eventos: Login exitoso, Login incorrecto, Logout</span>
+        </div>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0;">
+            Configurado en <code>config/logging.php</code> canal 'autenticacion'. Registra IP, ID de usuario, correo y resultado del intento.
+        </p>
+        <pre class="log-viewer"><%= autenticacionLog || '(Archivo vacío o sin entradas recientes)' %></pre>
+    </div>
+
+    <!-- SECCIÓN 2: Productos Log -->
+    <div class="card" style="border-color: #2b3046;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0; color: #fde047;">2. 📦 storage/logs/productos.log</h3>
+            <span class="badge badge-gerente">Eventos: Crear, Editar, Eliminar</span>
+        </div>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0;">
+            Configurado en <code>config/logging.php</code> canal 'productos'. Registra cambios en inventario, precios y vendedor asignado.
+        </p>
+        <pre class="log-viewer"><%= productosLog || '(Archivo vacío o sin entradas recientes)' %></pre>
+    </div>
+
+    <!-- SECCIÓN 3: Ventas Log -->
+    <div class="card" style="border-color: #2b3046;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0; color: #4ade80;">3. 🛒 storage/logs/ventas.log</h3>
+            <span class="badge badge-cliente">Eventos: Venta creada</span>
+        </div>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0;">
+            Configurado en <code>config/logging.php</code> canal 'ventas'. Registra la venta vinculando producto, cantidad, total, cliente y vendedor.
+        </p>
+        <pre class="log-viewer"><%= ventasLog || '(Archivo vacío o sin entradas recientes)' %></pre>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

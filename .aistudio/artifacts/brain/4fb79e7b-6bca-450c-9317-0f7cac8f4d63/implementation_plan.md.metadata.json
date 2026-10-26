@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan de implementación para la separación estricta de roles, eliminación de barras de depuración, acceso anónimo al catálogo e integración de la lógica de autorización de Laravel (Policies, Gates, FormRequests y AAA).",
+  "updatedAt":  "2026-10-26T00:46:32.944190864Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

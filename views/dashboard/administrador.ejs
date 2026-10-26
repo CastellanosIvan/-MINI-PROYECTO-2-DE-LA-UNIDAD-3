@@ -1,0 +1,56 @@
+<%- include('../partials/header', { title: 'Panel del Administrador' }) %>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">Panel de Administración General</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                <%= user.nombre %> <%= user.apellidos %> — <span class="badge badge-admin">ADMINISTRADOR GLOBAL</span> (<%= user.correo %>)
+            </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <a class="btn btn-sm" href="/usuarios/create">➕ Nuevo Usuario</a>
+            <a class="btn btn-sm btn-green" href="/productos/create">➕ Nuevo Producto</a>
+        </div>
+    </div>
+</div>
+
+<!-- TARJETAS DE MÉTRICAS GLOBALES -->
+<div class="grid">
+    <div class="card">
+        <h3>👥 Usuarios Totales</h3>
+        <p style="font-size: 2rem; font-weight: bold; color: #ff8a80; margin: 4px 0;"><%= totalUsuarios %></p>
+        <p style="font-size: 0.85rem; margin: 0;"><a href="/usuarios" style="color: #ff8a80;">Administrar usuarios ➔</a></p>
+    </div>
+    <div class="card">
+        <h3>📦 Productos en Catálogo</h3>
+        <p style="font-size: 2rem; font-weight: bold; color: #38bdf8; margin: 4px 0;"><%= totalProductos %></p>
+        <p style="font-size: 0.85rem; margin: 0;"><a href="/productos" style="color: #38bdf8;">Ver catálogo ➔</a></p>
+    </div>
+    <div class="card">
+        <h3>🏷️ Categorías Creadas</h3>
+        <p style="font-size: 2rem; font-weight: bold; color: #fde047; margin: 4px 0;"><%= totalCategorias %></p>
+        <p style="font-size: 0.85rem; margin: 0;"><a href="/categorias" style="color: #fde047;">Ver categorías ➔</a></p>
+    </div>
+    <div class="card">
+        <h3>🛒 Transacciones Realizadas</h3>
+        <p style="font-size: 2rem; font-weight: bold; color: #4ade80; margin: 4px 0;"><%= totalVentas %></p>
+        <p style="font-size: 0.85rem; margin: 0;"><a href="/ventas" style="color: #4ade80;">Ver ventas ➔</a></p>
+    </div>
+</div>
+
+<!-- ACCESOS RÁPIDOS Y AUDITORÍA -->
+<div class="grid">
+    <div class="card">
+        <h3>📜 Auditoría y Bitácoras AAA</h3>
+        <p>Revisa en tiempo real los eventos de autenticación, productos y ventas registrados en <code>storage/logs/</code>.</p>
+        <a class="btn btn-sm btn-gray" href="/bitacoras">Abrir Visor de Bitácoras</a>
+    </div>
+    <div class="card">
+        <h3>📊 Diagrama ER y Relaciones</h3>
+        <p>Consulta la arquitectura de bases de datos, claves foráneas y la relación <code>hasManyThrough</code>.</p>
+        <a class="btn btn-sm btn-gray" href="/diagrama-er">Ver Diagrama ER</a>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

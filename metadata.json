@@ -1,0 +1,5 @@
+{
+  "name": "CazFixt",
+  "description": "Taller especializado en la reparación de dispositivos móviles con sistema de gestión y paneles por rol.",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

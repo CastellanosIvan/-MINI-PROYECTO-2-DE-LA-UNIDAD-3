@@ -1,0 +1,165 @@
+<%- include('../partials/header', { title: 'Panel del Cliente' }) %>
+
+<style>
+    .cat-btn-sm {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        color: #94a3b8;
+        background: #141724;
+        border: 1px solid #282f48;
+        white-space: nowrap;
+        transition: all 0.2s;
+    }
+    .cat-btn-sm:hover, .cat-btn-sm.active {
+        background: var(--azul2);
+        color: #fff;
+        border-color: var(--azul2);
+    }
+</style>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">Hola, <%= user.nombre %> 👋</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario);">
+                Bienvenido(a) a tu panel de <span class="badge badge-cliente">CLIENTE</span> — <%= user.correo %>
+            </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <a class="btn btn-sm btn-green" href="/ventas/create">🛍️ Realizar Pedido</a>
+            <a class="btn btn-sm btn-gray" href="/contacto">🔧 Solicitar Reparación</a>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- CATÁLOGO ESPECIALIZADO ESTILO AT HOME MÉXICO EN EL PANEL -->
+<!-- ======================================================== -->
+<div class="card" style="border-color: #1e3a8a;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 style="margin: 0; font-size: 1.35rem; color: #93c5fd;">📦 Catálogo de Refacciones y Herramientas</h2>
+                <span style="font-size: 0.72rem; padding: 2px 6px; border-radius: 10px; background: #1e293b; color: #94a3b8;">Estilo At Home MX</span>
+            </div>
+            <p style="margin: 4px 0 0; font-size: 0.88rem; color: #94a3b8;">
+                Piezas de reemplazo, displays, baterías y consumibles con garantía de taller.
+            </p>
+        </div>
+        <a class="btn btn-sm btn-gray" href="/productos">Ver Catálogo General ➔</a>
+    </div>
+
+    <!-- Grid de Productos para el Cliente -->
+    <div class="grid-3">
+        <% if (typeof catalogo !== 'undefined' && catalogo && catalogo.length > 0) { %>
+            <% catalogo.forEach(function(p) { %>
+                <div class="card" style="margin-bottom: 0; background: #080a12; border: 1px solid #1f253a; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 0.72rem; font-weight: bold; background: #1a2238; color: #93c5fd; padding: 2px 6px; border-radius: 4px;">
+                                <%= p.categorias && p.categorias.length > 0 ? p.categorias[0].nombre : 'Refacción' %>
+                            </span>
+                            <span style="font-size: 0.75rem; color: #64748b;">SKU #<%= String(p.id).padStart(4, '0') %></span>
+                        </div>
+
+                        <h3 style="margin: 0 0 6px; font-size: 1.1rem; line-height: 1.3; color: #fff;"><%= p.nombre %></h3>
+                        <p style="font-size: 0.83rem; color: #94a3b8; min-height: 38px; margin: 0 0 10px; line-height: 1.4;"><%= p.descripcion %></p>
+
+                        <div style="margin-bottom: 10px;">
+                            <% if (p.categorias && p.categorias.length > 0) { %>
+                                <% p.categorias.forEach(function(cat) { %>
+                                    <span class="badge badge-tag" style="font-size: 0.68rem;"><%= cat.nombre %></span>
+                                <% }); %>
+                            <% } %>
+                        </div>
+
+                        <div style="font-size: 0.78rem; color: #64748b; padding: 6px 10px; background: #0d101a; border-radius: 4px; border: 1px solid #1a2030; margin-bottom: 12px;">
+                            Vendedor: <strong><%= p.vendedor ? p.vendedor.nombre + ' ' + p.vendedor.apellidos : 'CazFixt' %></strong><br>
+                            Stock: <strong style="color: <%= p.existencia > 0 ? '#4ade80' : '#f87171' %>;"><%= p.existencia %> disponibles</strong>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; border-top: 1px solid #1a2030; padding-top: 10px;">
+                            <span style="font-size: 0.75rem; color: #64748b;">PRECIO:</span>
+                            <span style="font-size: 1.35rem; font-weight: bold; color: #38bdf8;">$<%= Number(p.precio).toFixed(2) %></span>
+                        </div>
+
+                        <% if (p.existencia > 0) { %>
+                            <a class="btn btn-sm btn-green" href="/ventas/create?producto_id=<%= p.id %>" style="width: 100%;">
+                                🛒 Comprar ahora
+                            </a>
+                        <% } else { %>
+                            <button class="btn btn-sm btn-gray" disabled style="width: 100%; opacity: 0.5;">Agotado</button>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+                <p>No hay artículos disponibles actualmente.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MIS COMPRAS REALIZADAS (HISTORIAL DE VENTAS DEL CLIENTE) -->
+<!-- ======================================================== -->
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="margin: 0; font-size: 1.3rem;">📋 Mis Compras Realizadas</h2>
+        <a class="btn btn-sm btn-gray" href="/ventas">Ver todas mis ventas</a>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Folio #</th>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Vendedor</th>
+                    <th>Total Pagado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof misCompras !== 'undefined' && misCompras && misCompras.length > 0) { %>
+                    <% misCompras.forEach(function(c) { %>
+                        <tr>
+                            <td><strong>#<%= c.id %></strong></td>
+                            <td style="color: #94a3b8;"><%= c.fechaFormatted %></td>
+                            <td><strong><%= c.producto ? c.producto.nombre : 'Producto #' + c.producto_id %></strong></td>
+                            <td><%= c.vendedor ? c.vendedor.nombre + ' ' + c.vendedor.apellidos : 'Vendedor #' + c.vendedor_id %></td>
+                            <td><strong style="color: #4ade80;">$<%= Number(c.total).toFixed(2) %> MXN</strong></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align: center; color: #64748b;">Aún no has registrado ninguna compra. Selecciona un producto del catálogo para comprar.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- SERVICIOS DEL TALLER -->
+<div class="grid">
+    <div class="card">
+        <h3>🛠️ Servicio Técnico y Reparación</h3>
+        <p>Diagnóstico de pantallas, baterías infladas, cámaras y centros de carga con póliza de garantía.</p>
+        <a class="btn btn-sm btn-gray" href="/contacto">Agendar cita de taller</a>
+    </div>
+    <div class="card">
+        <h3>📍 Sucursal y Horarios</h3>
+        <p>Tuxtla Gutiérrez, Chiapas. Lunes a sábado de 9:00 a 19:00 h.</p>
+        <a class="btn btn-sm btn-gray" href="/ubicacion">Ver ubicación en mapa</a>
+    </div>
+    <div class="card">
+        <h3>👤 Tu Cuenta CazFixt</h3>
+        <p>Usuario: <strong><%= user.nombre %> <%= user.apellidos %></strong><br>Correo: <code><%= user.correo %></code></p>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

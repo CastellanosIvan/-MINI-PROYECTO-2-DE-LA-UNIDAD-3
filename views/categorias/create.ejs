@@ -1,0 +1,29 @@
+<%- include('../partials/header', { title: 'Nueva Categoría' }) %>
+
+<div class="card narrow">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="margin: 0;">➕ Crear Categoría</h2>
+        <a class="btn btn-gray btn-sm" href="/categorias">Volver</a>
+    </div>
+
+    <p style="font-size: 0.88rem; color: #94a3b8;">
+        Validación requerida mediante <strong>StoreCategoriaRequest</strong>. Autorización por <strong>CategoriaPolicy</strong>.
+    </p>
+
+    <form method="POST" action="/categorias" novalidate>
+        <label for="nombre">Nombre de la categoría</label>
+        <input type="text" id="nombre" name="nombre" value="<%= typeof form !== 'undefined' && form.nombre ? form.nombre : '' %>" required>
+        <% if (typeof errors !== 'undefined' && errors.nombre) { %><div class="error"><%= errors.nombre %></div><% } %>
+
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" rows="3"><%= typeof form !== 'undefined' && form.descripcion ? form.descripcion : '' %></textarea>
+        <% if (typeof errors !== 'undefined' && errors.descripcion) { %><div class="error"><%= errors.descripcion %></div><% } %>
+
+        <div style="margin-top: 24px; display: flex; gap: 10px;">
+            <button class="btn" type="submit">Guardar Categoría</button>
+            <a class="btn btn-gray" href="/categorias">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

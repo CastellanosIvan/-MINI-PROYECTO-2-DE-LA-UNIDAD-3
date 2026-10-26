@@ -1,0 +1,45 @@
+<%- include('../partials/header', { title: 'Categoría: ' + categoria.nombre }) %>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">🏷️ Categoría: <%= categoria.nombre %></h1>
+            <p style="margin: 4px 0 0; color: #94a3b8;"><%= categoria.descripcion || 'Sin descripción' %></p>
+        </div>
+        <a class="btn btn-gray btn-sm" href="/categorias">Volver a Categorías</a>
+    </div>
+
+    <!-- Demostración técnica de la relación Muchos a Muchos -->
+    <div style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.3); padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; font-size: 0.9rem;">
+        💡 <strong>Evidencia de Relación Eloquent:</strong> 
+        <code>Categoria->belongsToMany(Producto::class)</code> consultando mediante la tabla pivote <code>categoria_producto</code>.
+    </div>
+
+    <h3>Productos asignados a esta categoría (<%= productos.length %>)</h3>
+
+    <div class="grid-3">
+        <% if (productos && productos.length > 0) { %>
+            <% productos.forEach(function(p) { %>
+                <div class="card" style="margin-bottom: 0; border-color: #2b3046;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h4 style="margin: 0;"><%= p.nombre %></h4>
+                        <span style="font-weight: bold; color: #38bdf8;">$<%= Number(p.precio).toFixed(2) %></span>
+                    </div>
+                    <p style="font-size: 0.88rem; color: #94a3b8; margin: 8px 0;"><%= p.descripcion %></p>
+                    <div style="font-size: 0.8rem; color: #64748b;">
+                        Vendedor: <%= p.vendedor ? p.vendedor.nombre + ' ' + p.vendedor.apellidos : 'N/A' %>
+                    </div>
+                    <div style="margin-top: 14px;">
+                        <a class="btn btn-sm btn-green" href="/ventas/create?producto_id=<%= p.id %>">Comprar</a>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="card" style="grid-column: 1 / -1; text-align: center;">
+                <p>No hay productos vinculados actualmente a esta categoría.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

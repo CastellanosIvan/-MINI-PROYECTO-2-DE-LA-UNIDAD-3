@@ -1,0 +1,73 @@
+<%- include('../partials/header', { title: 'Usuarios' }) %>
+
+<div class="card">
+    <div class="row" style="justify-content:space-between">
+        <h1 style="margin:0">Usuarios</h1>
+        <a class="btn" href="/usuarios/create">+ Nuevo usuario</a>
+    </div>
+
+    <form method="GET" action="/usuarios" class="row" style="margin:16px 0">
+        <div style="flex:2">
+            <label>Buscar</label>
+            <input type="text" name="q" value="<%= typeof q !== 'undefined' ? q : '' %>" placeholder="Nombre o correo">
+        </div>
+        <div style="flex:1">
+            <label>Rol</label>
+            <select name="role">
+                <option value="">Todos</option>
+                <% roles.forEach(function(r) { %>
+                    <option value="<%= r %>" <%= (typeof selectedRole !== 'undefined' && selectedRole === r) ? 'selected' : '' %>><%= r.charAt(0).toUpperCase() + r.slice(1) %></option>
+                <% }); %>
+            </select>
+        </div>
+        <button class="btn" type="submit">Filtrar</button>
+        <a class="btn btn-gray" href="/usuarios">Limpiar</a>
+    </form>
+
+    <div style="overflow-x:auto">
+    <table>
+        <thead>
+            <tr><th>#</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Rol</th><th>Registro</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+        <% if (users && users.length > 0) { %>
+            <% users.forEach(function(u) { %>
+                <tr>
+                    <td><%= u.id %></td>
+                    <td><%= u.name %></td>
+                    <td><%= u.email %></td>
+                    <td><%= u.phone || '—' %></td>
+                    <td><span class="badge"><%= u.role.charAt(0).toUpperCase() + u.role.slice(1) %></span></td>
+                    <td><%= u.createdAtFormatted %></td>
+                    <td>
+                        <a class="btn" href="/usuarios/<%= u.id %>/edit">Editar</a>
+                        <% if (u.id !== user.id) { %>
+                        <form class="inline" method="POST" action="/usuarios/<%= u.id %>?_method=DELETE"
+                              onsubmit="return confirm('¿Eliminar a <%= u.name %>?')">
+                            <button class="btn btn-red" type="submit">Eliminar</button>
+                        </form>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }); %>
+        <% } else { %>
+            <tr><td colspan="7" style="text-align:center">No se encontraron usuarios.</td></tr>
+        <% } %>
+        </tbody>
+    </table>
+    </div>
+
+    <% if (totalPages > 1) { %>
+    <div class="pagination">
+        <% for (let p = 1; p <= totalPages; p++) { %>
+            <% if (p === currentPage) { %>
+                <span class="active"><%= p %></span>
+            <% } else { %>
+                <a href="/usuarios?page=<%= p %><%= q ? '&q=' + encodeURIComponent(q) : '' %><%= selectedRole ? '&role=' + encodeURIComponent(selectedRole) : '' %>"><%= p %></a>
+            <% } %>
+        <% } %>
+    </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

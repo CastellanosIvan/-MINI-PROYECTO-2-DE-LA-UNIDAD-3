@@ -1,0 +1,166 @@
+<%- include('../partials/header', { title: 'Catálogo de Refacciones y Herramientas' }) %>
+
+<style>
+    .brand-pill {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #1e293b;
+        color: #94a3b8;
+        border: 1px solid #334155;
+    }
+    .cat-btn {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: #94a3b8;
+        background: #141724;
+        border: 1px solid #282f48;
+        white-space: nowrap;
+        transition: all 0.2s;
+    }
+    .cat-btn:hover, .cat-btn.active {
+        background: var(--azul2);
+        color: #fff;
+        border-color: var(--azul2);
+    }
+</style>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+        <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">📦 Catálogo de Refacciones y Herramientas</h1>
+            <p style="margin: 4px 0 0; color: var(--txt-secundario); font-size: 0.92rem;">
+                Displays originales, módulos de carga, baterías de alta capacidad y herramientas para servicio técnico móvil.
+            </p>
+        </div>
+        <!-- Solo Administrador y Gerente pueden dar de alta productos -->
+        <% if (user && (user.rol === 'administrador' || user.rol === 'gerente')) { %>
+            <a class="btn btn-sm" href="/productos/create">➕ Nuevo Producto</a>
+        <% } %>
+    </div>
+
+    <!-- Píldoras de Categorías Rápida (Estilo athomemx.mx) -->
+    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 16px;">
+        <a class="cat-btn <%= !selectedCategoria ? 'active' : '' %>" href="/productos<%= q ? '?q=' + encodeURIComponent(q) : '' %>">
+            ⚡ Todas las Categorías
+        </a>
+        <% categorias.forEach(function(c) { %>
+            <a class="cat-btn <%= (selectedCategoria == c.id) ? 'active' : '' %>" 
+               href="/productos?categoria_id=<%= c.id %><%= q ? '&q=' + encodeURIComponent(q) : '' %>">
+                <%= c.nombre %>
+            </a>
+        <% }); %>
+    </div>
+
+    <!-- Barra de Búsqueda -->
+    <form method="GET" action="/productos" class="row" style="margin-bottom: 24px; background: #0c0e17; padding: 12px 16px; border-radius: 8px; border: 1px solid #23273a;">
+        <div style="flex: 3; min-width: 220px;">
+            <input type="text" name="q" value="<%= typeof q !== 'undefined' ? q : '' %>" placeholder="Buscar por modelo (ej. iPhone 13, Galaxy S23, Sugon, T7000)...">
+        </div>
+        <% if (selectedCategoria) { %>
+            <input type="hidden" name="categoria_id" value="<%= selectedCategoria %>">
+        <% } %>
+        <button class="btn btn-sm" type="submit">Buscar</button>
+        <a class="btn btn-sm btn-gray" href="/productos">Limpiar</a>
+    </form>
+
+    <!-- GRID DE PRODUCTOS -->
+    <div class="grid-3">
+        <% if (productos && productos.length > 0) { %>
+            <% productos.forEach(function(p) { %>
+                <div class="card" style="margin-bottom: 0; background: #0b0d14; border: 1px solid #23273a; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <!-- Header de tarjeta -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span class="brand-pill">
+                                <%= p.categorias && p.categorias.length > 0 ? p.categorias[0].nombre : 'Refacción' %>
+                            </span>
+                            <span style="font-size: 0.75rem; color: #64748b;">
+                                SKU #<%= String(p.id).padStart(4, '0') %>
+                            </span>
+                        </div>
+
+                        <!-- Título del producto -->
+                        <h3 style="margin: 0 0 8px; font-size: 1.15rem; line-height: 1.35; color: #fff;">
+                            <%= p.nombre %>
+                        </h3>
+
+                        <!-- Descripción -->
+                        <p style="font-size: 0.85rem; color: #94a3b8; min-height: 48px; margin: 0 0 14px; line-height: 1.45;">
+                            <%= p.descripcion %>
+                        </p>
+
+                        <!-- Etiquetas de Categorías Múltiples (Muchos a Muchos) -->
+                        <div style="margin-bottom: 14px;">
+                            <% if (p.categorias && p.categorias.length > 0) { %>
+                                <% p.categorias.forEach(function(cat) { %>
+                                    <span class="badge badge-tag" style="font-size: 0.72rem;"><%= cat.nombre %></span>
+                                <% }); %>
+                            <% } %>
+                        </div>
+
+                        <!-- Detalles Técnicos & Vendedor (Relación belongsTo Usuario) -->
+                        <div style="padding: 10px 12px; background: #111422; border-radius: 6px; border: 1px solid #1e2538; margin-bottom: 16px; font-size: 0.8rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: #64748b;">Vendido por:</span>
+                                <strong><%= p.vendedor ? p.vendedor.nombre + ' ' + p.vendedor.apellidos : 'CazFixt' %></strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: #64748b;">Garantía:</span>
+                                <span style="color: #93c5fd;">30 días con taller</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #64748b;">Disponibilidad:</span>
+                                <strong style="color: <%= p.existencia > 0 ? '#4ade80' : '#f87171' %>;">
+                                    <%= p.existencia > 0 ? 'En Stock (' + p.existencia + ' pzas)' : 'Agotado' %>
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer: Precio y Botones de Acción -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-top: 1px solid #1e2233; padding-top: 12px;">
+                            <span style="font-size: 0.78rem; color: #64748b;">PRECIO NETO (MXN):</span>
+                            <span style="font-size: 1.45rem; font-weight: 800; color: #38bdf8;">
+                                $<%= Number(p.precio).toFixed(2) %>
+                            </span>
+                        </div>
+
+                        <div style="display: flex; gap: 8px;">
+                            <% if (p.existencia > 0) { %>
+                                <!-- Para comprar: si está autenticado como cliente o usuario, va directo; si es visitante, va a login -->
+                                <a class="btn btn-green btn-sm" href="/ventas/create?producto_id=<%= p.id %>" style="flex: 2;">
+                                    🛒 Comprar Refacción
+                                </a>
+                            <% } else { %>
+                                <button class="btn btn-gray btn-sm" disabled style="flex: 2; opacity: 0.5;">Agotado</button>
+                            <% } %>
+
+                            <!-- Edición / Eliminación: estrictamente restringido a Admin o Gerente propietario -->
+                            <% if (user && (user.rol === 'administrador' || (user.rol === 'gerente' && p.usuario_id === user.id))) { %>
+                                <a class="btn btn-gray btn-sm" href="/productos/<%= p.id %>/edit" title="Editar producto">✏️</a>
+                                <form class="inline" method="POST" action="/productos/<%= p.id %>?_method=DELETE" onsubmit="return confirm('¿Eliminar producto?')">
+                                    <button class="btn btn-red btn-sm" type="submit" title="Eliminar producto">🗑️</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <p style="font-size: 1.1rem; color: #94a3b8;">No se encontraron artículos con el filtro especificado.</p>
+                <a class="btn btn-sm btn-gray" href="/productos">Ver todos los productos</a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
